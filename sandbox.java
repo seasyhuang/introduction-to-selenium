@@ -18,7 +18,7 @@ public class sandbox {
 
 	WebDriver driver;
 	JavascriptExecutor jse;
-	String autoName = "Automated Test Name 3";
+	String autoName = "Automated Test Name 4";
 	String autoDesc = "Automated Test Description";
 
 	public void invokeBrowser() {
@@ -53,7 +53,11 @@ public class sandbox {
 			createTransaction();
 			addFirstSigner();
 			addAdditionalSigners();
+			enableSigningOrder();
 			reorderSigners();
+			isSigningOrderEnabled();
+			uploadDocumentPDF();
+			nextToDesigner();
  
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -208,8 +212,8 @@ public class sandbox {
 //			String xpathExpression = "//*[@id=\"main-wrapper\"]/div/div[2]/div[2]/div/div/div[1]/div[3]/section/div/div[2]/div/div/div[2]/div[3]/span/div/div/div[2]/div[1]";
 //			element = driver.findElement(By.xpath(xpathExpression));
 			
-			selector = "input[id='notarization'] + div > div:nth-child(3) > div";
-			element = driver.findElement(By.cssSelector(selector));			// sibling 
+			selector = "input[id='notarization'] + div > div:nth-child(3) > div";		// access through the sibling 
+			element = driver.findElement(By.cssSelector(selector));			
 
 			String value = element.getCssValue("background-color");
 			System.out.println("Current colour is: " + value);
@@ -325,36 +329,113 @@ public class sandbox {
 			
 			WebElement dragHandle4 = driver.findElement(By.cssSelector("div[class='signers'] > ul[class='list list-decorated list-hover list-draggable signers-list'] > li:nth-child(4) > div[class='signer-item'] > div[class='drag-handle']"));
 			WebElement firstSpot = driver.findElement(By.cssSelector("div[class='signers'] > ul[class='list list-decorated list-hover list-draggable signers-list'] > li:nth-child(1)"));
+			WebElement secondSpot = driver.findElement(By.cssSelector("div[class='signers'] > ul[class='list list-decorated list-hover list-draggable signers-list'] > li:nth-child(2)"));
+			WebElement thirdSpot = driver.findElement(By.cssSelector("div[class='signers'] > ul[class='list list-decorated list-hover list-draggable signers-list'] > li:nth-child(3)"));
 			
 			Action dragAndDrop = builder.clickAndHold(dragHandle4)
-				.pause(1000)
-				.moveToElement(firstSpot, 0, -1)
-//				.dragAndDrop(dragHandle4, firstSpot)
-				.pause(1500)
-				.release()
-	        	.build();
-//
+					.pause(1000)
+	//				.moveToElement(firstSpot, -5, -20)
+	//				.pause(2000)
+					.moveToElement(firstSpot, 0, 20)
+					.pause(1000)
+					.moveToElement(firstSpot, 0, 0)
+	//				.dragAndDrop(dragHandle4, firstSpot)
+					.pause(200)
+					.release()
+		        	.build();
+
 			dragAndDrop.perform();
 			
-//			(new Actions(driver)).dragAndDrop(dragHandle4, firstSpot).perform();
-//			
-//			WebElement dragHandle2 = driver.findElement(By.cssSelector("div[class='signers'] > ul[class='list list-decorated list-hover list-draggable signers-list'] > li:nth-child(2) > div[class='signer-item'] > div[class='drag-handle']"));
-//			dragHandle4 = driver.findElement(By.cssSelector("div[class='signers'] > ul[class='list list-decorated list-hover list-draggable signers-list'] > li:nth-child(4) > div[class='signer-item'] > div[class='drag-handle']"));
-//			(new Actions(driver)).dragAndDrop(dragHandle4, dragHandle2).perform();
-//			
-//			WebElement dragHandle3 = driver.findElement(By.cssSelector("div[class='signers'] > ul[class='list list-decorated list-hover list-draggable signers-list'] > li:nth-child(4) > div[class='signer-item'] > div[class='drag-handle']"));
-//			dragHandle4 = driver.findElement(By.cssSelector("div[class='signers'] > ul[class='list list-decorated list-hover list-draggable signers-list'] > li:nth-child(4) > div[class='signer-item'] > div[class='drag-handle']"));
-//			(new Actions(driver)).dragAndDrop(dragHandle4, dragHandle3).perform();
-			
-			
-						
+			dragAndDrop = builder.clickAndHold(dragHandle4)
+					.moveToElement(secondSpot, 0, -10)
+					.pause(1000)
+					.moveToElement(secondSpot, 0, -1)
+					.pause(200)
+					.release()
+		        	.build();
 
+			dragAndDrop.perform();
+			
+			dragAndDrop = builder.clickAndHold(dragHandle4)
+					.moveToElement(thirdSpot, 0, -10)
+					.pause(1000)
+					.moveToElement(thirdSpot, 0, -1)
+					.pause(200)
+					.release()
+		        	.build();
+
+			dragAndDrop.perform();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	public void isSigningOrderEnabled() {
+		
+		try {
+			Thread.sleep(1000);
+
+			String soButton = "section[class='transaction-section transaction-signers'] > div[class='row'] > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(3) > div:nth-child(2)";
+			WebElement element = driver.findElement(By.cssSelector(soButton));			
+
+			String value = element.getCssValue("background-color");
+			System.out.println("Current value is: " + value);
+
+			String onColor = "rgb(131, 163, 50)";
+			String oC2 = "rgba(131, 163, 50, 1)";
+			String offColor = "rgb(245, 245, 245)";
+			String offColor2 = "rgba(245, 245, 245, 1)";
+
+			if (value.equals(onColor) || value.equals(oC2)) {
+				System.out.println("Signing order was successfully enabled.");
+			}
+
+			else if (value.equals(offColor) || value.equals(offColor2)) {
+				System.out.println("Signing order is currently disabled.");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void uploadDocumentPDF() {
+
+		try {
+
+			jse = (JavascriptExecutor) driver; // scroll
+			jse.executeScript("scroll(0, -400)");
+			
+			String input = "div[class='file-upload'] + form > input[type='file']";
+			String path = "C:\\Users\\huangti1\\Downloads\\Math323-00-SyllabusEvaluation.pdf";
+			driver.findElement(By.cssSelector(input)).sendKeys(path);
+			
+
+			Thread.sleep(1500);
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 	
+	public void nextToDesigner() {
+
+		try {
+			
+			String next = "button[class='button responsive-button design-transaction-button']";
+			driver.findElement(By.cssSelector(next)).click();
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	} 
+
 	public void navigateCommands() {
 
 		try {

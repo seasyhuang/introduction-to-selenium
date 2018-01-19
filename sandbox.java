@@ -1,37 +1,38 @@
 package mytestpack;
 
-import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 public class sandbox {
 
-	WebDriver driver;
+	static WebDriver driver;
 	JavascriptExecutor jse;
 	String autoName = "Automated Test Name 4";
 	String autoDesc = "Automated Test Description";
+	Wait<WebDriver> waitLoad = new FluentWait<WebDriver>(driver)
+            .withTimeout(5, TimeUnit.SECONDS)
+            .pollingEvery(1, TimeUnit.SECONDS)
+            .ignoring(NoSuchElementException.class);
 
 	public void invokeBrowser() {
 
 		try {
-			System.setProperty("webdriver.chrome.driver", "C:\\Users\\huangti1\\selenium\\chromedriver.exe");
-			driver = new ChromeDriver();
-			driver.manage().deleteAllCookies();
-			driver.manage().window(); // maximize the window
-			driver.manage().window().maximize();
-			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS); 	// synchronize the lines of code + page --
-			driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);	// wait for the page to load
-
+			
 			driver.get("https://sandbox.esignlive.com/");
 			
 //			System.out.println("##### CURRENTLY RUNNING FIRST TEST: #####");
@@ -53,11 +54,11 @@ public class sandbox {
 			createTransaction();
 			addFirstSigner();
 			addAdditionalSigners();
-			enableSigningOrder();
+//			enableSigningOrder();
 			reorderSigners();
 			isSigningOrderEnabled();
-			uploadDocumentPDF();
-			nextToDesigner();
+//			uploadDocumentPDF();
+//			nextToDesigner();
  
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -70,13 +71,20 @@ public class sandbox {
 			
 			String username = "tingyu.huang@esignlive.com";
 			String password = "Silanis1";
+				
+			WebElement emailField = driver.findElement(By.cssSelector("input[name='email']"));
+			emailField.click();
+			slowKeys(username, emailField);
 			
-			driver.findElement(By.cssSelector("input[name='email']")).click();
-			driver.findElement(By.cssSelector("input[name='email']")).sendKeys(username); 			// types user name into the email field
+			WebElement passwordField = driver.findElement(By.cssSelector("input[name='password']"));
+			slowKeys(password, passwordField);
+			passwordField.sendKeys(Keys.ENTER);
 			
-			driver.findElement(By.cssSelector("input[name='password']")).sendKeys(password);		// types password into the password field
-			driver.findElement(By.cssSelector("input[name='password']")).sendKeys(Keys.ENTER);
-			driver.findElement(By.id("mui-id-1")).sendKeys("Silanis1"); // types password into the password field
+//			driver.findElement(By.cssSelector("input[name='email']")).click();
+//			driver.findElement(By.cssSelector("input[name='email']")).sendKeys(username); 			// types user name into the email field
+			
+//			driver.findElement(By.cssSelector("input[name='password']")).sendKeys(password);		// types password into the password field
+//			driver.findElement(By.cssSelector("input[name='password']")).sendKeys(Keys.ENTER);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,9 +95,9 @@ public class sandbox {
 
 		try {
 			
-			//these both work
-//			driver.findElement(By.cssSelector("button.button.responsive-button.new-transaction-button")).click();
-			driver.findElement(By.cssSelector("button[class='button responsive-button new-transaction-button']")).click();
+			WebElement ntButton = driver.findElement(By.cssSelector("button[class='button responsive-button new-transaction-button']"));
+			waitLoad.until(ExpectedConditions.visibilityOf(ntButton));
+			ntButton.click();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -100,11 +108,15 @@ public class sandbox {
 
 		try {
 			
-			driver.findElement(By.id("transactionTitle")).click();
-			driver.findElement(By.id("transactionTitle")).sendKeys(autoName); // enters transaction name
-
-			driver.findElement(By.id("description")).click();
-			driver.findElement(By.id("description")).sendKeys(autoDesc); // enters transaction description
+			WebElement transactionTitle = driver.findElement(By.id("transactionTitle"));
+			transactionTitle.click();
+			slowKeys(autoName, transactionTitle);
+//			transactionTitle.sendKeys(autoName); // enters transaction name
+			
+			WebElement transactionDescription = driver.findElement(By.id("description"));
+			transactionDescription.click();
+			slowKeys(autoDesc, transactionDescription);
+//			transactionDescription.sendKeys(autoDesc); // enters transaction description
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -115,11 +127,9 @@ public class sandbox {
 
 		try {
 
-//			String template = "body > div:nth-child(12) > div > div:nth-child(2) > div > div > div > div > section > form > div.Select.is-searchable";
 			String template = "div[class='Select is-searchable']";					// version 2 update
 			driver.findElement(By.cssSelector(template)).click();
-
-//			template = "body > div:nth-child(12) > div > div:nth-child(2) > div > div > div > div > section > form > div.Select is-searchable is-open is-focused > div.Select-menu-outer > div > div";
+			
 			template = "div[class='Select-option is-focused']";						// version 2 update
 			driver.findElement(By.cssSelector(template)).click();
 
@@ -245,9 +255,12 @@ public class sandbox {
 //			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 //			driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
 			Thread.sleep(2000);
-			driver.findElement(By.name("firstName")).click();
-		    driver.findElement(By.name("firstName")).clear();
-		    driver.findElement(By.name("firstName")).sendKeys(inputFN);
+			
+			WebElement firstName = driver.findElement(By.name("firstName"));
+			firstName.click();
+			firstName.clear();
+			slowKeys(inputFN, firstName);
+//		    firstName.sendKeys(inputFN);
 		    
 		    Thread.sleep(1500);
 		    driver.findElement(By.cssSelector("div.name.text-truncate > span")).click();
@@ -270,11 +283,13 @@ public class sandbox {
 			String add = "button[class='button text-button medium-icon link-button add-button']";
 			driver.findElement(By.cssSelector(add)).click();		// click add button
 			
-			driver.findElement(By.xpath("(//input[@name='firstName'])[2]")).click();
-		    driver.findElement(By.xpath("(//input[@name='firstName'])[2]")).clear();
-		    driver.findElement(By.xpath("(//input[@name='firstName'])[2]")).sendKeys("ccrecipient1");
-		    
-		    Thread.sleep(1500);
+			WebElement firstName2 = driver.findElement(By.xpath("(//input[@name='firstName'])[2]"));
+			firstName2.click();
+			firstName2.clear();
+			slowKeys("ccrecipient1", firstName2);
+//			firstName2.sendKeys("ccrecipient1");
+//		    Thread.sleep(1500);
+			
 		    String clickDropdown = "ul[role='listbox'][aria-hidden='false']";
 		    driver.findElement(By.cssSelector(clickDropdown)).click();
 		    
@@ -282,22 +297,26 @@ public class sandbox {
 		    Thread.sleep(1500);
 		    
 			driver.findElement(By.cssSelector(add)).click();		// click add button
-			driver.findElement(By.xpath("(//input[@name='firstName'])[3]")).click();
-		    driver.findElement(By.xpath("(//input[@name='firstName'])[3]")).clear();
-		    driver.findElement(By.xpath("(//input[@name='firstName'])[3]")).sendKeys("ccrecipient2");
+			WebElement firstName3 = driver.findElement(By.xpath("(//input[@name='firstName'])[3]"));
+			firstName3.click();
+			firstName3.clear();
+			slowKeys("ccrecipient2", firstName3);
+//			firstName3.sendKeys("ccrecipient2");
+//		    Thread.sleep(1500);
 		    
-		    Thread.sleep(1500);
 		    driver.findElement(By.cssSelector(clickDropdown)).click();
 
 //		    ######### FOURTH RECIPIENT #########
 		    Thread.sleep(1500);
 		    
 			driver.findElement(By.cssSelector(add)).click();		// click add button
-			driver.findElement(By.xpath("(//input[@name='firstName'])[4]")).click();
-		    driver.findElement(By.xpath("(//input[@name='firstName'])[4]")).clear();
-		    driver.findElement(By.xpath("(//input[@name='firstName'])[4]")).sendKeys("rez");
-		    
-		    Thread.sleep(1500); 
+			WebElement firstName4 = driver.findElement(By.xpath("(//input[@name='firstName'])[4]"));
+			firstName4.click();
+			firstName4.clear();
+			slowKeys("rez", firstName4);
+//			firstName4.sendKeys("rez");
+//		    Thread.sleep(1500); 
+			
 		    driver.findElement(By.cssSelector(clickDropdown)).click();
 
 		} catch (Exception e) {
@@ -347,7 +366,7 @@ public class sandbox {
 			dragAndDrop.perform();
 			
 			dragAndDrop = builder.clickAndHold(dragHandle4)
-					.moveToElement(secondSpot, 0, -10)
+//					.moveToElement(secondSpot, 0, -10)
 					.pause(1000)
 					.moveToElement(secondSpot, 0, -1)
 					.pause(200)
@@ -357,7 +376,7 @@ public class sandbox {
 			dragAndDrop.perform();
 			
 			dragAndDrop = builder.clickAndHold(dragHandle4)
-					.moveToElement(thirdSpot, 0, -10)
+//					.moveToElement(thirdSpot, 0, -10)
 					.pause(1000)
 					.moveToElement(thirdSpot, 0, -1)
 					.pause(200)
@@ -435,7 +454,31 @@ public class sandbox {
 		}
 
 	} 
+	
+// ########### (MORE) HELPER FUNCTIONS ###########
+//
+//			   /\ /|
+//			   \ V /
+//			   | '')
+//			   /  |
+//			  /  \ \    -Felix Lee-
+//			*(__\_\-
+//
 
+	public static void slowKeys(String text, WebElement element) {
+		String[] array = text.split("");
+
+		for (int i = 0; i < array.length; i++) {
+//			System.out.println(array[i]);
+			element.sendKeys(array[i]);
+			try {
+				Thread.sleep(40);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public void navigateCommands() {
 
 		try {
@@ -459,8 +502,19 @@ public class sandbox {
 
 	public static void main(String[] args) {
 
+		System.setProperty("webdriver.chrome.driver", "C:\\Users\\huangti1\\selenium\\chromedriver.exe");
+		driver = new ChromeDriver();
+		driver.manage().deleteAllCookies();
+		driver.manage().window(); // maximize the window
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS); 	// synchronize the lines of code + page --
+		driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);	// wait for the page to load
+		
 		sandbox myObj = new sandbox();
+		
 		myObj.invokeBrowser();
+		
+		
 	}
 
 }

@@ -1,19 +1,23 @@
-package mytestpack;
+package sandboxPKG;
 
-import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -22,62 +26,67 @@ public class sandbox {
 
 	static WebDriver driver;
 	JavascriptExecutor jse;
-	String autoName = "Automated Test Name 4";
-	String autoDesc = "Automated Test Description";
+	
+//	String autoName = "Automated Test Name 4";
+//	String autoDesc = "Automated Test Description";
+	
 	Wait<WebDriver> waitLoad = new FluentWait<WebDriver>(driver)
             .withTimeout(5, TimeUnit.SECONDS)
             .pollingEvery(1, TimeUnit.SECONDS)
             .ignoring(NoSuchElementException.class);
 
-	public void invokeBrowser() {
+	public void invokeBrowser(HashMap<String, String> data) {
 
 		try {
 			
-			driver.get("https://sandbox.esignlive.com/");
+//			driver.get("https://sandbox.esignlive.com/");
+			driver.get((String) data.get("environment"));
 			
 //			System.out.println("##### CURRENTLY RUNNING FIRST TEST: #####");
-//			login();
+//			
+//			login(data);
 //			newTransaction();
-//			fillTransaction();
+//			fillTransaction(data);
 //			applyTemplate();
 //			createTransaction();
 //			openSettings();
 //			enableNotarization();
-//			firstCheck();
-
-			// closeTab();
-//			
+//			firstCheck(data);
+			
 			System.out.println("\n##### CURRENTLY RUNNING SECOND TEST: #####\n");
-			login();
+			login(data);
 			newTransaction();
-			fillTransaction();
+			fillTransaction(data);
 			createTransaction();
-			addFirstSigner();
-			addAdditionalSigners();
-//			enableSigningOrder();
+			addFirstSigner(data);
+			addAdditionalSigners(data);
+			enableSigningOrder();
 			reorderSigners();
-			isSigningOrderEnabled();
-//			uploadDocumentPDF();
-//			nextToDesigner();
- 
+			isSigningOrderEnabled(data);
+			openSettings();
+			setExpiryDate();
+			uploadDocumentPDF(data);
+			nextToDesigner();				
+					
+					
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void login() {
+	public void login(HashMap<String, String> data) {
 
 		try {
 			
-			String username = "tingyu.huang@esignlive.com";
-			String password = "Silanis1";
+//			String username = "tingyu.huang@esignlive.com";
+//			String password = "Silanis1";
 				
 			WebElement emailField = driver.findElement(By.cssSelector("input[name='email']"));
 			emailField.click();
-			slowKeys(username, emailField);
+			slowKeys(data.get("username"), emailField);
 			
 			WebElement passwordField = driver.findElement(By.cssSelector("input[name='password']"));
-			slowKeys(password, passwordField);
+			slowKeys(data.get("password"), passwordField);
 			passwordField.sendKeys(Keys.ENTER);
 			
 //			driver.findElement(By.cssSelector("input[name='email']")).click();
@@ -104,18 +113,18 @@ public class sandbox {
 		}
 	}
 
-	public void fillTransaction() {
+	public void fillTransaction(HashMap<String, String> data) {
 
 		try {
 			
 			WebElement transactionTitle = driver.findElement(By.id("transactionTitle"));
 			transactionTitle.click();
-			slowKeys(autoName, transactionTitle);
+			slowKeys(data.get("autoName"), transactionTitle);
 //			transactionTitle.sendKeys(autoName); // enters transaction name
 			
 			WebElement transactionDescription = driver.findElement(By.id("description"));
 			transactionDescription.click();
-			slowKeys(autoDesc, transactionDescription);
+			slowKeys(data.get("autoDesc"), transactionDescription);
 //			transactionDescription.sendKeys(autoDesc); // enters transaction description
 
 		} catch (Exception e) {
@@ -179,13 +188,12 @@ public class sandbox {
 		}
 	}
 
-	public void firstCheck() {			
+	public void firstCheck(HashMap<String, String> data) {			
 		// checks if the inputed name and description is the same as the current value for name and description
 
 		try {
 			Thread.sleep(1000);
 
-//			String selector = "#main-wrapper > div > div.app-wrapper > div.grid-layout.transaction-edit-layout > div > div > div.row > div:nth-child(4) > section > section > div > div > div.transaction-title > div";
 			String selector = "div[class='transaction-title']";							// get to the parent 
 			WebElement element = driver.findElement(By.cssSelector(selector));
 			element.click();
@@ -196,7 +204,7 @@ public class sandbox {
 			String name = element.getAttribute("value");								// get the value of the input tag
 			System.out.println("Current name is: " + name);
 
-			if (name.equals(autoName)) {
+			if (name.equals(data.get("autoName"))) {
 				System.out.println("Transaction name was changed successfully to " + name);
 			}
 
@@ -213,15 +221,12 @@ public class sandbox {
 			String desc = element.getAttribute("value");
 			System.out.println("Current description is: " + desc);
 
-			if (desc.equals(autoDesc)) {
+			if (desc.equals(data.get("autoDesc"))) {
 				System.out.println("Transaction description was changed successfully to " + desc);
 			}
 
 			System.out.println("--------------------------------------------------");
 
-//			String xpathExpression = "//*[@id=\"main-wrapper\"]/div/div[2]/div[2]/div/div/div[1]/div[3]/section/div/div[2]/div/div/div[2]/div[3]/span/div/div/div[2]/div[1]";
-//			element = driver.findElement(By.xpath(xpathExpression));
-			
 			selector = "input[id='notarization'] + div > div:nth-child(3) > div";		// access through the sibling 
 			element = driver.findElement(By.cssSelector(selector));			
 
@@ -245,21 +250,18 @@ public class sandbox {
 	}
 	
 	
-	public void addFirstSigner() {
-		// will always add seasysideacc@gmail.com as the first signer
+	public void addFirstSigner(HashMap<String, String> data) {
 		
 		try {
 			
-			String inputFN = "seasyside";
+//			String firstname1 = "seasyside";
 			
-//			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-//			driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
 			Thread.sleep(2000);
 			
 			WebElement firstName = driver.findElement(By.name("firstName"));
 			firstName.click();
 			firstName.clear();
-			slowKeys(inputFN, firstName);
+			slowKeys(data.get("firstname1"), firstName);
 //		    firstName.sendKeys(inputFN);
 		    
 		    Thread.sleep(1500);
@@ -271,8 +273,7 @@ public class sandbox {
 		}
 	}
 	
-	public void addAdditionalSigners() {
-		// will always add seasysideacc@gmail.com as the first signer
+	public void addAdditionalSigners(HashMap<String, String> data) {
 		
 		try {
 			
@@ -286,7 +287,7 @@ public class sandbox {
 			WebElement firstName2 = driver.findElement(By.xpath("(//input[@name='firstName'])[2]"));
 			firstName2.click();
 			firstName2.clear();
-			slowKeys("ccrecipient1", firstName2);
+			slowKeys(data.get("firstname2"), firstName2);
 //			firstName2.sendKeys("ccrecipient1");
 //		    Thread.sleep(1500);
 			
@@ -300,7 +301,7 @@ public class sandbox {
 			WebElement firstName3 = driver.findElement(By.xpath("(//input[@name='firstName'])[3]"));
 			firstName3.click();
 			firstName3.clear();
-			slowKeys("ccrecipient2", firstName3);
+			slowKeys(data.get("firstname3"), firstName3);
 //			firstName3.sendKeys("ccrecipient2");
 //		    Thread.sleep(1500);
 		    
@@ -313,7 +314,7 @@ public class sandbox {
 			WebElement firstName4 = driver.findElement(By.xpath("(//input[@name='firstName'])[4]"));
 			firstName4.click();
 			firstName4.clear();
-			slowKeys("rez", firstName4);
+			slowKeys(data.get("firstname4"), firstName4);
 //			firstName4.sendKeys("rez");
 //		    Thread.sleep(1500); 
 			
@@ -390,7 +391,7 @@ public class sandbox {
 		}
 	}
 	
-	public void isSigningOrderEnabled() {
+	public void isSigningOrderEnabled(HashMap<String, String> data) {
 		
 		try {
 			Thread.sleep(1000);
@@ -401,16 +402,16 @@ public class sandbox {
 			String value = element.getCssValue("background-color");
 			System.out.println("Current value is: " + value);
 
-			String onColor = "rgb(131, 163, 50)";
-			String oC2 = "rgba(131, 163, 50, 1)";
-			String offColor = "rgb(245, 245, 245)";
-			String offColor2 = "rgba(245, 245, 245, 1)";
+//			String onColor = "rgb(131, 163, 50)";
+//			String oC2 = "rgba(131, 163, 50, 1)";
+//			String offColor = "rgb(245, 245, 245)";
+//			String offColor2 = "rgba(245, 245, 245, 1)";
 
-			if (value.equals(onColor) || value.equals(oC2)) {
+			if (value.equals(data.get("onColor")) || value.equals(data.get("onColor2"))) {
 				System.out.println("Signing order was successfully enabled.");
 			}
 
-			else if (value.equals(offColor) || value.equals(offColor2)) {
+			else if (value.equals(data.get("offColor")) || value.equals(data.get("offColor2"))) {
 				System.out.println("Signing order is currently disabled.");
 			}
 
@@ -420,7 +421,32 @@ public class sandbox {
 
 	}
 
-	public void uploadDocumentPDF() {
+	public void setExpiryDate() {
+
+		try {
+			
+			String date = "div[class='date-field']";
+			driver.findElement(By.cssSelector(date)).click();
+
+			Date today = new Date();
+			SimpleDateFormat ft = new SimpleDateFormat("dd");				// this gives the date of the month 
+			int tmrw = Integer.parseInt(ft.format(today)) + 1;				// tomorrow's date (of the month)						
+			
+			String xtmrw = "//span[contains(text(), \"" + tmrw + "\")]/..";	// get parent
+//			System.out.println(xtmrw);
+//			System.out.println("//span[contains(text(), \"22\")]");
+			
+//			xtmrw = "//span[contains(text(), \"23\")]/..";
+			
+			driver.findElement(By.xpath(xtmrw)).click();					// click parent		
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void uploadDocumentPDF(HashMap<String, String> data) {
 
 		try {
 
@@ -428,8 +454,7 @@ public class sandbox {
 			jse.executeScript("scroll(0, -400)");
 			
 			String input = "div[class='file-upload'] + form > input[type='file']";
-			String path = "C:\\Users\\huangti1\\Downloads\\Math323-00-SyllabusEvaluation.pdf";
-			driver.findElement(By.cssSelector(input)).sendKeys(path);
+			driver.findElement(By.cssSelector(input)).sendKeys(data.get("docPath"));
 			
 
 			Thread.sleep(1500);
@@ -499,9 +524,37 @@ public class sandbox {
 	public void closeTab() {
 		driver.close();
 	}
+		
+	public static HashMap<String, String> convertExcelData(XSSFSheet sheet) {
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		
+		int maxNumPairs = sheet.getPhysicalNumberOfRows();
+		System.out.println(maxNumPairs);
+		
+		for (int i = 1; i < maxNumPairs; i++) {
+			String key = sheet.getRow(i).getCell(0).getStringCellValue();	
+			String value = sheet.getRow(i).getCell(1).getStringCellValue();		
+	
+			data.put(key, value);
+		}
+		
+		return data;
+	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		
+		File src = new File("P:\\Documents\\Excel_Data\\Selenium_Data.xlsx");		// apache POI
+		FileInputStream fis = new FileInputStream(src);								// pass src into fis 
+		XSSFWorkbook wb = new XSSFWorkbook(fis);									// this line loads the workbook (XML SpreadSheet Format)
+		XSSFSheet sheet1 = wb.getSheetAt(0);										// accesses sheet 1 on excel
 
+		// store all data in an array
+		HashMap<String, String> data = new HashMap<String, String>();
+		data = convertExcelData(sheet1);
+		
+		System.out.println(data.toString());
+		
 		System.setProperty("webdriver.chrome.driver", "C:\\Users\\huangti1\\selenium\\chromedriver.exe");
 		driver = new ChromeDriver();
 		driver.manage().deleteAllCookies();
@@ -512,9 +565,9 @@ public class sandbox {
 		
 		sandbox myObj = new sandbox();
 		
-		myObj.invokeBrowser();
-		
-		
+		myObj.invokeBrowser(data);		
+	
+		fis.close();
 	}
 
 }

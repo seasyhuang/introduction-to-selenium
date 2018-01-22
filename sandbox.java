@@ -31,7 +31,7 @@ public class sandbox {
 //	String autoDesc = "Automated Test Description";
 	
 	Wait<WebDriver> waitLoad = new FluentWait<WebDriver>(driver)
-            .withTimeout(5, TimeUnit.SECONDS)
+            .withTimeout(10, TimeUnit.SECONDS)
             .pollingEvery(1, TimeUnit.SECONDS)
             .ignoring(NoSuchElementException.class);
 
@@ -42,16 +42,38 @@ public class sandbox {
 //			driver.get("https://sandbox.esignlive.com/");
 			driver.get((String) data.get("environment"));
 			
-//			System.out.println("##### CURRENTLY RUNNING FIRST TEST: #####");
-//			
-//			login(data);
-//			newTransaction();
-//			fillTransaction(data);
-//			applyTemplate();
-//			createTransaction();
-//			openSettings();
-//			enableNotarization();
-//			firstCheck(data);
+//			firstTest(data);
+//			secondTest(data);		
+			thirdTest(data);	
+					
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void firstTest(HashMap<String, String> data) {
+
+		try {
+			
+			System.out.println("##### CURRENTLY RUNNING FIRST TEST: #####");
+			
+			login(data);
+			newTransaction();
+			fillTransaction(data);
+			applyTemplate();
+			createTransaction();
+			openSettings();
+			enableNotarization();
+			firstCheck(data);
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void secondTest(HashMap<String, String> data) {
+
+		try {
 			
 			System.out.println("\n##### CURRENTLY RUNNING SECOND TEST: #####\n");
 			login(data);
@@ -60,14 +82,32 @@ public class sandbox {
 			createTransaction();
 			addFirstSigner(data);
 			addAdditionalSigners(data);
-			enableSigningOrder();
 			reorderSigners();
 			isSigningOrderEnabled(data);
 			openSettings();
 			setExpiryDate();
 			uploadDocumentPDF(data);
-			nextToDesigner();				
+			nextToDesigner();
 					
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void thirdTest(HashMap<String, String> data) {
+
+		try {
+
+			System.out.println("\n##### CURRENTLY RUNNING THIRD TEST: #####\n");
+			login(data);
+			newTransaction();
+			fillTransaction(data);
+			createTransaction();
+			addFirstSigner(data);
+			uploadDocumentPDF(data);
+			nextToDesigner();
+			dragSignature();
+			dragFields();
 					
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -477,7 +517,139 @@ public class sandbox {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	} 
+	
+	public void dragSignature() {
 
+		String signature = "figure[class='spot-source text-truncate']";
+		
+		waitLoad.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(signature)));
+		
+		WebElement sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signature']"));
+//		sigBlock.click();
+		
+		Actions builder = new Actions(driver);
+		
+		Action dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 0)
+				.pause(500)
+				.release()
+	        	.build();
+
+		dragAndDrop.perform();
+		
+		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='initials']"));
+		dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 20)
+				.pause(500)
+				.release()
+	        	.build();
+		dragAndDrop.perform();
+		
+		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signingDate']"));
+		dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 40)
+				.pause(500)
+				.release()
+	        	.build();
+		dragAndDrop.perform();
+		
+		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerName']"));
+		dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 60)
+				.pause(500)
+				.release()
+	        	.build();
+		dragAndDrop.perform();
+		
+		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerTitle']"));
+		dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 80)
+				.pause(500)
+				.release()
+	        	.build();
+		dragAndDrop.perform();
+		
+		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerCompany']"));
+		dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 100)
+				.pause(500)
+				.release()
+	        	.build();
+		dragAndDrop.perform();
+
+	}
+	
+	public void dragFields() {
+
+		
+		jse = (JavascriptExecutor) driver; // casting
+		((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(By.cssSelector("figure[data-block-type='label']")));
+		
+		WebElement field = driver.findElement(By.cssSelector("figure[data-block-type='label']"));
+		
+		Actions builder = new Actions(driver);
+		
+		Action dragAndDrop = builder.clickAndHold(field)
+				.pause(500)
+				.moveByOffset(800, 0)
+				.pause(500)
+				.release()
+	        	.build();
+
+		dragAndDrop.perform();
+//		
+//		field = driver.findElement(By.cssSelector("figure[data-block-type='initials']"));
+//		dragAndDrop = builder.clickAndHold(field)
+//				.pause(500)
+//				.moveByOffset(600, 20)
+//				.pause(500)
+//				.release()
+//	        	.build();
+//		dragAndDrop.perform();
+//		
+//		field = driver.findElement(By.cssSelector("figure[data-block-type='signingDate']"));
+//		dragAndDrop = builder.clickAndHold(field)
+//				.pause(500)
+//				.moveByOffset(600, 40)
+//				.pause(500)
+//				.release()
+//	        	.build();
+//		dragAndDrop.perform();
+//		
+//		field = driver.findElement(By.cssSelector("figure[data-block-type='signerName']"));
+//		dragAndDrop = builder.clickAndHold(field)
+//				.pause(500)
+//				.moveByOffset(600, 60)
+//				.pause(500)
+//				.release()
+//	        	.build();
+//		dragAndDrop.perform();
+//		
+//		field = driver.findElement(By.cssSelector("figure[data-block-type='signerTitle']"));
+//		dragAndDrop = builder.clickAndHold(field)
+//				.pause(500)
+//				.moveByOffset(600, 80)
+//				.pause(500)
+//				.release()
+//	        	.build();
+//		dragAndDrop.perform();
+//		
+//		field = driver.findElement(By.cssSelector("figure[data-block-type='signerCompany']"));
+//		dragAndDrop = builder.clickAndHold(field)
+//				.pause(500)
+//				.moveByOffset(600, 100)
+//				.pause(500)
+//				.release()
+//	        	.build();
+//		dragAndDrop.perform();
+		
 	} 
 	
 // ########### (MORE) HELPER FUNCTIONS ###########
@@ -553,7 +725,7 @@ public class sandbox {
 		HashMap<String, String> data = new HashMap<String, String>();
 		data = convertExcelData(sheet1);
 		
-		System.out.println(data.toString());
+//		System.out.println(data.toString());
 		
 		System.setProperty("webdriver.chrome.driver", "C:\\Users\\huangti1\\selenium\\chromedriver.exe");
 		driver = new ChromeDriver();

@@ -107,7 +107,9 @@ public class sandbox {
 			uploadDocumentPDF(data);
 			nextToDesigner();
 			dragSignature();
-			dragFields();
+//			dragFields();
+			saveLayout(data);
+			sendToSign();
 					
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -539,6 +541,8 @@ public class sandbox {
 
 		dragAndDrop.perform();
 		
+		//////////////////////////////////////////////////////////////////////////////////////		
+		
 		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='initials']"));
 		dragAndDrop = builder.clickAndHold(sigBlock)
 				.pause(500)
@@ -547,75 +551,9 @@ public class sandbox {
 				.release()
 	        	.build();
 		dragAndDrop.perform();
-		
-		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signingDate']"));
-		dragAndDrop = builder.clickAndHold(sigBlock)
-				.pause(500)
-				.moveByOffset(600, 40)
-				.pause(500)
-				.release()
-	        	.build();
-		dragAndDrop.perform();
-		
-		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerName']"));
-		dragAndDrop = builder.clickAndHold(sigBlock)
-				.pause(500)
-				.moveByOffset(600, 60)
-				.pause(500)
-				.release()
-	        	.build();
-		dragAndDrop.perform();
-		
-		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerTitle']"));
-		dragAndDrop = builder.clickAndHold(sigBlock)
-				.pause(500)
-				.moveByOffset(600, 80)
-				.pause(500)
-				.release()
-	        	.build();
-		dragAndDrop.perform();
-		
-		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerCompany']"));
-		dragAndDrop = builder.clickAndHold(sigBlock)
-				.pause(500)
-				.moveByOffset(600, 100)
-				.pause(500)
-				.release()
-	        	.build();
-		dragAndDrop.perform();
-
-	}
-	
-	public void dragFields() {
-
-		
-		jse = (JavascriptExecutor) driver; // casting
-		((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(By.cssSelector("figure[data-block-type='label']")));
-		
-		WebElement field = driver.findElement(By.cssSelector("figure[data-block-type='label']"));
-		
-		Actions builder = new Actions(driver);
-		
-		Action dragAndDrop = builder.clickAndHold(field)
-				.pause(500)
-				.moveByOffset(800, 0)
-				.pause(500)
-				.release()
-	        	.build();
-
-		dragAndDrop.perform();
 //		
-//		field = driver.findElement(By.cssSelector("figure[data-block-type='initials']"));
-//		dragAndDrop = builder.clickAndHold(field)
-//				.pause(500)
-//				.moveByOffset(600, 20)
-//				.pause(500)
-//				.release()
-//	        	.build();
-//		dragAndDrop.perform();
-//		
-//		field = driver.findElement(By.cssSelector("figure[data-block-type='signingDate']"));
-//		dragAndDrop = builder.clickAndHold(field)
+//		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signingDate']"));
+//		dragAndDrop = builder.clickAndHold(sigBlock)
 //				.pause(500)
 //				.moveByOffset(600, 40)
 //				.pause(500)
@@ -623,8 +561,8 @@ public class sandbox {
 //	        	.build();
 //		dragAndDrop.perform();
 //		
-//		field = driver.findElement(By.cssSelector("figure[data-block-type='signerName']"));
-//		dragAndDrop = builder.clickAndHold(field)
+//		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerName']"));
+//		dragAndDrop = builder.clickAndHold(sigBlock)
 //				.pause(500)
 //				.moveByOffset(600, 60)
 //				.pause(500)
@@ -632,8 +570,8 @@ public class sandbox {
 //	        	.build();
 //		dragAndDrop.perform();
 //		
-//		field = driver.findElement(By.cssSelector("figure[data-block-type='signerTitle']"));
-//		dragAndDrop = builder.clickAndHold(field)
+//		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerTitle']"));
+//		dragAndDrop = builder.clickAndHold(sigBlock)
 //				.pause(500)
 //				.moveByOffset(600, 80)
 //				.pause(500)
@@ -641,8 +579,8 @@ public class sandbox {
 //	        	.build();
 //		dragAndDrop.perform();
 //		
-//		field = driver.findElement(By.cssSelector("figure[data-block-type='signerCompany']"));
-//		dragAndDrop = builder.clickAndHold(field)
+//		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerCompany']"));
+//		dragAndDrop = builder.clickAndHold(sigBlock)
 //				.pause(500)
 //				.moveByOffset(600, 100)
 //				.pause(500)
@@ -650,8 +588,130 @@ public class sandbox {
 //	        	.build();
 //		dragAndDrop.perform();
 		
+		
+		//////////////////////////////////////////////////////////////////////////////////////	
+
+	}
+	
+	public void dragFields() {
+
+		try {
+			Thread.sleep(500);
+			
+			jse = (JavascriptExecutor) driver; // casting
+			((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(By.cssSelector("figure[data-block-type='label']")));
+			
+			WebElement field = driver.findElement(By.cssSelector("figure[data-block-type='label']"));
+			
+			Actions builder = new Actions(driver);
+			
+			Action dragAndDrop = builder.clickAndHold(field)
+					.pause(500)
+					.moveByOffset(1000, -200)
+					.pause(500)
+					.release()
+			    	.build();
+
+			dragAndDrop.perform();
+			
+			field = driver.findElement(By.cssSelector("figure[data-block-type='list']"));
+			dragAndDrop = builder.clickAndHold(field)
+					.pause(500)
+					.moveByOffset(1000, -78)
+					.pause(500)
+					.release()
+			    	.build();
+
+			dragAndDrop.perform();
+			
+			field = driver.findElement(By.cssSelector("figure[data-block-type='radio']"));
+			field.click();	Thread.sleep(500);	
+			field.click();	Thread.sleep(500);
+			field.click();	Thread.sleep(500);
+			field.click();	Thread.sleep(500);
+			
+			field = driver.findElement(By.cssSelector("figure[data-block-type='checkbox']"));
+			field.click();	Thread.sleep(500);
+			field.click();	Thread.sleep(500);	
+			
+			field = driver.findElement(By.cssSelector("figure[data-block-type='textarea']"));
+			field.click();	Thread.sleep(500);
+			
+			field = driver.findElement(By.cssSelector("figure[data-block-type='textfield']"));
+			field.click();
+			
+			((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(By.cssSelector("section[class='signers-list']")));
+			
+			
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	} 
 	
+	public void saveLayout(HashMap<String, String> data) {
+
+		try {
+			
+			String saveLayout = "div[class='layout-actions-bar align-right'] button[class='icon-button'] span[class='icon-file-upload']";
+			WebElement save = driver.findElement(By.cssSelector(saveLayout));
+			
+//			Actions hover = new Actions(driver);
+//			hover.moveToElement(save);
+//			String tooltip = "div[class='rc-tooltip rc-tooltip-placement-bottom']";
+//			waitLoad.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(tooltip)));
+			save.click();
+			
+			String popup = "div[class='modal']";
+			waitLoad.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(popup)));
+			
+			WebElement layoutName = driver.findElement(By.id("layoutTitle"));
+			layoutName.click();
+			layoutName.clear();
+			slowKeys(data.get("layoutName"), layoutName);
+			
+			WebElement layoutDesc = driver.findElement(By.id("layoutDescription"));
+			layoutDesc.click();
+			layoutDesc.clear();
+			slowKeys(data.get("layoutDesc"), layoutDesc);
+			
+			driver.findElement(By.cssSelector("div[class=\"bottom-bar\"] > div")).click();		// click the save button to save layout
+			
+			// checks if the layout already exists. if the element is present => isPresent will be 1
+			Boolean isPresent = driver.findElements(By.xpath("(//div[@class=\"modal\"])[2]")).size() > 0;
+			if (isPresent == true) {		// this overwrites the layout no matter what 
+				driver.findElement(By.cssSelector("div[class=modal-actions] > div")).click();
+			}	
+			
+			//TODO
+//			WebElement snackbar = driver.findElement(By.cssSelector("div[class=\"snackbar\"]"));
+//			waitLoad.until(ExpectedConditions.invisibilityOf(snackbar));
+			
+			Thread.sleep(2000);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	} 
+	
+	public void sendToSign() {
+
+		try {
+			
+			String click = "div[class=\"send-button-container\"]";
+			driver.findElement(By.cssSelector(click)).click();
+
+			String popup = "div[class='modal']";													// waits for the confirm pop up
+			waitLoad.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(popup)));
+			
+			driver.findElement(By.cssSelector("div[class=\"bottom-bar\"] > div")).click();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	} 
+	
+	
+
 // ########### (MORE) HELPER FUNCTIONS ###########
 //
 //			   /\ /|
@@ -669,7 +729,7 @@ public class sandbox {
 //			System.out.println(array[i]);
 			element.sendKeys(array[i]);
 			try {
-				Thread.sleep(40);
+				Thread.sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

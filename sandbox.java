@@ -40,11 +40,12 @@ public class sandbox {
 		try {
 			
 //			driver.get("https://sandbox.esignlive.com/");
-			driver.get((String) data.get("environment"));
+//			driver.get((String) data.get("environment"));
 			
 //			firstTest(data);
 //			secondTest(data);		
-			thirdTest(data);	
+//			thirdTest(data);
+			signTransaction(data);
 					
 					
 		} catch (Exception e) {
@@ -58,6 +59,7 @@ public class sandbox {
 			
 			System.out.println("##### CURRENTLY RUNNING FIRST TEST: #####");
 			
+			driver.get((String) data.get("environment"));
 			login(data);
 			newTransaction();
 			fillTransaction(data);
@@ -76,6 +78,8 @@ public class sandbox {
 		try {
 			
 			System.out.println("\n##### CURRENTLY RUNNING SECOND TEST: #####\n");
+			
+			driver.get((String) data.get("environment"));
 			login(data);
 			newTransaction();
 			fillTransaction(data);
@@ -99,6 +103,8 @@ public class sandbox {
 		try {
 
 			System.out.println("\n##### CURRENTLY RUNNING THIRD TEST: #####\n");
+			
+			driver.get((String) data.get("environment"));
 			login(data);
 			newTransaction();
 			fillTransaction(data);
@@ -107,14 +113,29 @@ public class sandbox {
 			uploadDocumentPDF(data);
 			nextToDesigner();
 			dragSignature();
-//			dragFields();
-			saveLayout(data);
-			sendToSign();
+			dragFields(data);
+//			saveLayout(data);
+//			sendToSign();
 					
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	public void signTransaction(HashMap<String, String> data) {
+
+		try {
+
+			System.out.println("\n##### CURRENTLY SIGNING TRANSACTION: #####\n");
+			
+			driver.get((String) data.get("mail"));
+			loginMail(data);
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	public void login(HashMap<String, String> data) {
 
@@ -136,6 +157,25 @@ public class sandbox {
 			
 //			driver.findElement(By.cssSelector("input[name='password']")).sendKeys(password);		// types password into the password field
 //			driver.findElement(By.cssSelector("input[name='password']")).sendKeys(Keys.ENTER);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void loginMail(HashMap<String, String> data) {
+
+		try {
+				
+			WebElement emailField = driver.findElement(By.cssSelector("input[type='email']"));
+			emailField.click();
+			slowKeys(data.get("emailUsername"), emailField);
+			
+			driver.findElement(By.id("identifierNext")).click();
+			
+//			WebElement passwordField = driver.findElement(By.id("identifierNext"));
+//			slowKeys(data.get("emailPassword"), passwordField);
+//			passwordField.sendKeys(Keys.ENTER);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -551,49 +591,49 @@ public class sandbox {
 				.release()
 	        	.build();
 		dragAndDrop.perform();
-//		
-//		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signingDate']"));
-//		dragAndDrop = builder.clickAndHold(sigBlock)
-//				.pause(500)
-//				.moveByOffset(600, 40)
-//				.pause(500)
-//				.release()
-//	        	.build();
-//		dragAndDrop.perform();
-//		
-//		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerName']"));
-//		dragAndDrop = builder.clickAndHold(sigBlock)
-//				.pause(500)
-//				.moveByOffset(600, 60)
-//				.pause(500)
-//				.release()
-//	        	.build();
-//		dragAndDrop.perform();
-//		
-//		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerTitle']"));
-//		dragAndDrop = builder.clickAndHold(sigBlock)
-//				.pause(500)
-//				.moveByOffset(600, 80)
-//				.pause(500)
-//				.release()
-//	        	.build();
-//		dragAndDrop.perform();
-//		
-//		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerCompany']"));
-//		dragAndDrop = builder.clickAndHold(sigBlock)
-//				.pause(500)
-//				.moveByOffset(600, 100)
-//				.pause(500)
-//				.release()
-//	        	.build();
-//		dragAndDrop.perform();
+		
+		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signingDate']"));
+		dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 40)
+				.pause(500)
+				.release()
+	        	.build();
+		dragAndDrop.perform();
+		
+		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerName']"));
+		dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 60)
+				.pause(500)
+				.release()
+	        	.build();
+		dragAndDrop.perform();
+		
+		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerTitle']"));
+		dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 80)
+				.pause(500)
+				.release()
+	        	.build();
+		dragAndDrop.perform();
+		
+		sigBlock = driver.findElement(By.cssSelector("figure[data-block-type='signerCompany']"));
+		dragAndDrop = builder.clickAndHold(sigBlock)
+				.pause(500)
+				.moveByOffset(600, 100)
+				.pause(500)
+				.release()
+	        	.build();
+		dragAndDrop.perform();
 		
 		
 		//////////////////////////////////////////////////////////////////////////////////////	
 
 	}
 	
-	public void dragFields() {
+	public void dragFields(HashMap<String, String> data) {
 
 		try {
 			Thread.sleep(500);
@@ -624,6 +664,8 @@ public class sandbox {
 
 			dragAndDrop.perform();
 			
+			fillListField(data);
+			
 			field = driver.findElement(By.cssSelector("figure[data-block-type='radio']"));
 			field.click();	Thread.sleep(500);	
 			field.click();	Thread.sleep(500);
@@ -647,6 +689,50 @@ public class sandbox {
 			e.printStackTrace();
 		}
 	} 
+	
+	public void fillListField(HashMap<String, String> data) {
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		WebElement mostRecentField = driver.findElement(By.xpath("(//figure[@data-type='input'])[last()]"));
+		WebElement viewSettings = driver.findElement(By.cssSelector("div[class='grid-layout designer-layout has-selection']"));
+		mostRecentField.click();
+		
+		waitLoad.until(ExpectedConditions.visibilityOf(viewSettings));
+		
+		String settings = "(//figure[@data-type='input'])[last()]//div[@class='settings']";
+		driver.findElement(By.xpath(settings)).click();
+		
+		String popup = "div[class='modal']";
+		waitLoad.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(popup)));
+		
+		WebElement listName = driver.findElement(By.cssSelector("input[name=name]"));
+		listName.click();
+		listName.clear();
+		slowKeys(data.get("listName"), listName);
+		
+		WebElement listList = driver.findElement(By.cssSelector("textarea[name=list]"));
+		listList.click();
+		listList.clear();
+		slowKeys(data.get("listList1"), listList);
+		listList.sendKeys(Keys.ENTER);
+		slowKeys(data.get("listList2"), listList);
+		listList.sendKeys(Keys.ENTER);
+		slowKeys(data.get("listList3"), listList);
+		
+		driver.findElement(By.cssSelector("div[class=\"bottom-bar\"] > div")).click();		// click the save button
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 	public void saveLayout(HashMap<String, String> data) {
 
@@ -709,8 +795,6 @@ public class sandbox {
 			e.printStackTrace();
 		}
 	} 
-	
-	
 
 // ########### (MORE) HELPER FUNCTIONS ###########
 //
@@ -798,7 +882,8 @@ public class sandbox {
 		sandbox myObj = new sandbox();
 		
 		myObj.invokeBrowser(data);		
-	
+		
+		wb.close();
 		fis.close();
 	}
 
